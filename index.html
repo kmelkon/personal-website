@@ -324,6 +324,34 @@
       background: transparent;
     }
 
+    /* ===== TOAST (konami / copy) ===== */
+    .toast {
+      position: fixed;
+      left: 50%; bottom: 26px;
+      transform: translateX(-50%) translateY(16px);
+      background: var(--ink); color: var(--bg);
+      font-family: var(--font-display); font-weight: 700;
+      font-size: 0.82rem; letter-spacing: 0.3px;
+      padding: 11px 18px;
+      border: 3px solid var(--accent);
+      opacity: 0; pointer-events: none; z-index: 500;
+      transition: opacity 0.25s ease, transform 0.3s var(--spring);
+    }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ===== AVATAR SPIN ===== */
+    @keyframes spin360 { to { transform: rotate(363deg); } }
+    .avatar.spin { animation: spin360 0.6s var(--spring); }
+
+    /* ===== TAGLINE WAVE ===== */
+    @keyframes wave {
+      0%, 100% { transform: rotate(0.8deg); }
+      20% { transform: rotate(-2.5deg); }
+      45% { transform: rotate(3deg); }
+      70% { transform: rotate(-1.5deg); }
+    }
+    .tagline.wave { animation: wave 0.8s ease; }
+
     /* ===== RESPONSIVE ===== */
     @media (max-width: 560px) {
       .grid { grid-template-columns: 1fr; }
@@ -472,17 +500,27 @@
     }, { threshold: 0.1 });
     io.observe(document.getElementById('grid'));
 
-    // ===== Floating draggable shapes + gravity (press G) =====
+    // ===== Floating shapes: drag, throw, gravity (G) + play features =====
     (function () {
       if (matchMedia('(max-width: 760px)').matches) return;
-      const els = document.querySelectorAll('.shape');
       const all = [];
-      let gravity = false, frame = null;
+      let gravity = false, frame = null, last = 0;
+      const BOUNCE = 0.55, FRICTION = 0.985, STOP = 8, G = 1800;
 
-      els.forEach(el => {
+      function pin(s) {
+        if (s.moved) return;
+        const rr = s.el.getBoundingClientRect();
+        s.x = rr.left; s.y = rr.top;
+        s.el.classList.remove('floating');
+        s.el.style.left = '0'; s.el.style.top = '0';
+        s.el.style.right = 'auto'; s.el.style.bottom = 'auto';
+        s.moved = true;
+      }
+
+      function register(el) {
         const r = el.getBoundingClientRect();
         const s = {
-          el, dragging: false, phys: false, moved: false,
+          el, dragging: false, phys: false, moved: false, dead: false,
           x: r.left, y: r.top, w: el.offsetWidth, h: el.offsetHeight,
           vx: 0, vy: 0, sx: 0, sy: 0, ex: 0, ey: 0, hist: []
         };
@@ -502,7 +540,43 @@
           s.hist = [{ x: e.clientX, y: e.clientY, t: performance.now() }];
           s.vx = 0; s.vy = 0;
         });
-      });
+
+        // E2 — double-click to kick it flying
+        el.addEventListener('dblclick', e => {
+          e.preventDefault();
+          pin(s);
+          const ang = Math.random() * Math.PI * 2, pow = 1300 + Math.random() * 900;
+          s.vx = Math.cos(ang) * pow; s.vy = Math.sin(ang) * pow;
+          el.classList.remove('floating'); el.classList.add('phys');
+          s.phys = true; ensure();
+        });
+
+        return s;
+      }
+
+      // Spawn a fresh accent shape flying from (x,y); temp ones fade + clean up
+      function spawn(x, y, vx, vy, temp) {
+        const kinds = ['sq', 'ci', 'tr', 'di'];
+        const size = 26 + (Math.random() * 34 | 0);
+        const el = document.createElement('div');
+        el.className = 'shape ' + kinds[(Math.random() * 4) | 0];
+        el.style.cssText = `width:${size}px;height:${size}px;background:var(--accent);opacity:.85;left:0;top:0;right:auto;bottom:auto;transform:translate(${x}px,${y}px)`;
+        document.body.appendChild(el);
+        const s = register(el);
+        s.x = x; s.y = y; s.w = size; s.h = size;
+        s.moved = true; s.phys = true; s.vx = vx; s.vy = vy;
+        el.classList.add('phys');
+        if (temp) setTimeout(() => {
+          el.style.transition = 'opacity .6s ease'; el.style.opacity = '0';
+          setTimeout(() => {
+            s.dead = true; el.remove();
+            const i = all.indexOf(s); if (i >= 0) all.splice(i, 1);
+          }, 650);
+        }, 3500);
+        return s;
+      }
+
+      document.querySelectorAll('.shape').forEach(register);
 
       addEventListener('mousemove', e => {
         for (const s of all) {
@@ -535,28 +609,42 @@
         }
       });
 
-      const BOUNCE = 0.55, FRICTION = 0.985, STOP = 8, G = 1800;
-      let last = 0;
       function ensure() { if (!frame) { last = performance.now(); frame = requestAnimationFrame(step); } }
+
+      // E5 — shapes bump into each other (circle approximation)
+      function collide() {
+        for (let i = 0; i < all.length; i++) {
+          const a = all[i]; if (a.dead || !a.moved) continue;
+          for (let j = i + 1; j < all.length; j++) {
+            const b = all[j]; if (b.dead || !b.moved) continue;
+            const ar = Math.min(a.w, a.h) / 2, br = Math.min(b.w, b.h) / 2;
+            const dx = (b.x + b.w / 2) - (a.x + a.w / 2);
+            const dy = (b.y + b.h / 2) - (a.y + a.h / 2);
+            const dist = Math.hypot(dx, dy) || 0.001, min = ar + br;
+            if (dist < min) {
+              const nx = dx / dist, ny = dy / dist, push = (min - dist) / 2;
+              a.x -= nx * push; a.y -= ny * push;
+              b.x += nx * push; b.y += ny * push;
+              const vn = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
+              if (vn < 0) {
+                const imp = -1.4 * vn / 2;
+                a.vx -= imp * nx; a.vy -= imp * ny;
+                b.vx += imp * nx; b.vy += imp * ny;
+              }
+            }
+          }
+        }
+      }
 
       function step(now) {
         const dt = Math.min((now - last) / 1000, 0.05); last = now;
         const W = innerWidth, H = innerHeight;
         let active = false;
+
         for (const s of all) {
+          if (s.dead || s.dragging) continue;
           if (!s.phys && !gravity) continue;
-          if (s.dragging) continue;
-          if (gravity && !s.phys) {
-            if (!s.moved) {
-              const rr = s.el.getBoundingClientRect();
-              s.x = rr.left; s.y = rr.top;
-              s.el.classList.remove('floating');
-              s.el.style.left = '0'; s.el.style.top = '0';
-              s.el.style.right = 'auto'; s.el.style.bottom = 'auto';
-              s.moved = true;
-            }
-            s.phys = true; s.el.classList.add('phys');
-          }
+          if (gravity && !s.phys) { pin(s); s.phys = true; s.el.classList.add('phys'); }
           active = true;
           if (gravity) s.vy += G * dt;
           s.vx *= FRICTION; s.vy *= FRICTION;
@@ -566,6 +654,16 @@
           else if (s.x > mx) { s.x = mx; s.vx = -Math.abs(s.vx) * BOUNCE; }
           if (s.y < 0) { s.y = 0; s.vy = Math.abs(s.vy) * BOUNCE; }
           else if (s.y > my) { s.y = my; s.vy = -Math.abs(s.vy) * BOUNCE; }
+        }
+
+        collide();
+
+        for (const s of all) {
+          if (s.dead || s.dragging) continue;
+          if (!s.phys && !gravity) continue;
+          const mx = W - s.w, my = H - s.h;
+          if (s.x < 0) s.x = 0; else if (s.x > mx) s.x = mx;
+          if (s.y < 0) s.y = 0; else if (s.y > my) s.y = my;
           s.el.style.transform = `translate(${s.x}px,${s.y}px) rotate(${s.vx * 0.03}deg)`;
           const sp = Math.hypot(s.vx, s.vy);
           if (!gravity && sp < STOP) {
@@ -574,13 +672,84 @@
           }
           if (gravity && s.y >= my - 1 && sp < STOP) { s.vx = s.vy = 0; }
         }
+
         frame = (active || gravity) ? requestAnimationFrame(step) : null;
       }
 
+      // Gravity toggle
       addEventListener('keydown', e => {
-        if ((e.key === 'g' || e.key === 'G') && !/input|textarea/i.test(e.target.tagName)) {
-          gravity = !gravity;
-          if (gravity) ensure();
+        if (/input|textarea/i.test(e.target.tagName)) return;
+        if (e.key === 'g' || e.key === 'G') { gravity = !gravity; if (gravity) ensure(); }
+      });
+
+      // E6 — click the avatar: spin + fling a shape
+      const avatar = document.querySelector('.avatar');
+      if (avatar) {
+        avatar.style.cursor = 'pointer';
+        avatar.addEventListener('click', () => {
+          avatar.classList.remove('spin'); void avatar.offsetWidth; avatar.classList.add('spin');
+          const r = avatar.getBoundingClientRect();
+          spawn(r.left + r.width / 2, r.top + r.height / 2,
+                (Math.random() - 0.5) * 900, -650 - Math.random() * 500, true);
+          ensure();
+        });
+      }
+
+      // E1 — Konami code: shape burst
+      const KON = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+      let ki = 0;
+      addEventListener('keydown', e => {
+        const k = e.key.length === 1 ? e.key.toLowerCase() : e.key;
+        ki = (k === KON[ki]) ? ki + 1 : (k === KON[0] ? 1 : 0);
+        if (ki === KON.length) {
+          ki = 0;
+          const cx = innerWidth / 2, cy = innerHeight / 2;
+          for (let n = 0; n < 16; n++) {
+            const ang = (Math.PI * 2 * n) / 16 + Math.random() * 0.3, pow = 900 + Math.random() * 700;
+            spawn(cx, cy, Math.cos(ang) * pow, Math.sin(ang) * pow, true);
+          }
+          ensure();
+          showToast('🎉 you found it');
+        }
+      });
+    })();
+
+    // Shared toast (konami + copy)
+    let _toastT;
+    function showToast(msg) {
+      let t = document.getElementById('toast');
+      if (!t) { t = document.createElement('div'); t.id = 'toast'; t.className = 'toast'; document.body.appendChild(t); }
+      t.textContent = msg;
+      t.classList.add('show');
+      clearTimeout(_toastT);
+      _toastT = setTimeout(() => t.classList.remove('show'), 1600);
+    }
+
+    // E3 — click the email card to copy the address
+    (function () {
+      const card = document.querySelector('a[href^="mailto:"]');
+      if (!card) return;
+      const addr = card.getAttribute('href').replace('mailto:', '');
+      card.addEventListener('click', async e => {
+        if (navigator.clipboard && window.isSecureContext) {
+          e.preventDefault();
+          try { await navigator.clipboard.writeText(addr); showToast('Email copied ✓'); }
+          catch { location.href = 'mailto:' + addr; }
+        }
+      });
+    })();
+
+    // E4 — type "hi" anywhere: the tagline waves back
+    (function () {
+      const tagline = document.querySelector('.tagline');
+      if (!tagline) return;
+      let buf = '';
+      addEventListener('keydown', e => {
+        if (/input|textarea/i.test(e.target.tagName) || e.key.length !== 1) return;
+        buf = (buf + e.key.toLowerCase()).slice(-4);
+        if (buf.endsWith('hi')) {
+          tagline.classList.remove('wave'); void tagline.offsetWidth; tagline.classList.add('wave');
+          showToast('👋 hey!'); buf = '';
         }
       });
     })();
