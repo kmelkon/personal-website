@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Karam Malkon — Links</title>
+  <meta name="description" content="Karam Malkon — Software & AI Engineer. Find me on GitHub, LinkedIn, itch.io, Play Store, and npm.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RESET & TOKENS ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #fdf6f0;
+      --ink: #1a1a1a;
+      --card: #fefcfa;
+      --card-2: #faf0f0;
+      --accent: #cc5f5f;
+      --accent-pale: #f5dada;
+      --on-accent: #ffffff;
+      --muted: #6b6b6b;
+
+      --border: 3.5px solid var(--ink);
+      --border-thick: 4.5px solid var(--ink);
+      --shadow-offset: 6px 6px 0 var(--ink);
+      --font-display: 'Space Mono', monospace;
+      --font-body: 'Space Grotesk', sans-serif;
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Dark by system preference (unless user forced light) */
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #1b1917;
+        --ink: #fdf6f0;
+        --card: #262220;
+        --card-2: #2e2422;
+        --accent: #e0706e;
+        --accent-pale: #3a2a29;
+        --on-accent: #1b1917;
+        --muted: #9a938c;
+      }
+    }
+    /* Dark when user forces it */
+    :root[data-theme="dark"] {
+      --bg: #1b1917;
+      --ink: #fdf6f0;
+      --card: #262220;
+      --card-2: #2e2422;
+      --accent: #e0706e;
+      --accent-pale: #3a2a29;
+      --on-accent: #1b1917;
+      --muted: #9a938c;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--ink);
+      overflow-x: hidden;
+      min-height: 100vh;
+      cursor: default;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+
+    ::selection { background: var(--accent); color: var(--on-accent); }
+    a { color: inherit; text-decoration: none; }
+
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 88px 24px 48px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== THEME TOGGLE ===== */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 200;
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      background: var(--card);
+      border: var(--border);
+      cursor: pointer;
+      color: var(--ink);
+      transition: transform 0.3s var(--spring), background 0.3s ease, color 0.3s ease;
+    }
+    .theme-toggle:hover {
+      transform: rotate(-6deg) scale(1.08);
+      box-shadow: 4px 4px 0 var(--ink);
+    }
+    .theme-toggle:active { transform: scale(0.95); }
+    .theme-toggle svg { width: 22px; height: 22px; display: none; }
+    :root[data-theme="dark"] .theme-toggle .i-sun,
+    :root:not([data-theme="light"]) .theme-toggle .i-sun { display: block; }
+    :root[data-theme="dark"] .theme-toggle .i-moon,
+    :root:not([data-theme="light"]) .theme-toggle .i-moon { display: none; }
+    :root[data-theme="light"] .theme-toggle .i-moon { display: block; }
+    :root[data-theme="light"] .theme-toggle .i-sun { display: none; }
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme="dark"]) .theme-toggle .i-moon { display: block; }
+      :root:not([data-theme="dark"]) .theme-toggle .i-sun { display: none; }
+    }
+
+    /* ===== HERO ===== */
+    .hero { position: relative; margin-bottom: 56px; }
+
+    .avatar {
+      width: 84px; height: 84px;
+      border: var(--border-thick);
+      background: var(--accent);
+      color: var(--on-accent);
+      display: grid; place-items: center;
+      font-family: var(--font-display);
+      font-weight: 700; font-size: 2rem;
+      letter-spacing: -1px;
+      transform: rotate(-3deg);
+      margin-bottom: 24px;
+      transition: transform 0.4s var(--spring), box-shadow 0.3s ease;
+    }
+    .avatar:hover {
+      transform: rotate(0deg) scale(1.05);
+      box-shadow: var(--shadow-offset);
+    }
+
+    .hero-label {
+      font-family: var(--font-display);
+      font-size: 0.8rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 3px;
+      color: var(--muted);
+      display: inline-block;
+      margin-bottom: 14px;
+      transform: rotate(-1deg);
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(2.6rem, 9vw, 4.2rem);
+      line-height: 0.95; letter-spacing: -2px;
+      margin-bottom: 22px;
+    }
+    .hero h1 .last { color: var(--accent); }
+
+    .tagline {
+      font-family: var(--font-display);
+      font-size: clamp(1rem, 3.4vw, 1.2rem);
+      line-height: 1.5;
+      max-width: 520px;
+      padding: 18px 22px;
+      background: var(--card-2);
+      border: var(--border);
+      transform: rotate(0.8deg);
+      transition: transform 0.3s var(--spring);
+    }
+    .tagline:hover { transform: rotate(0deg) scale(1.02); }
+
+    /* ===== LINKS ===== */
+    .links-head {
+      font-family: var(--font-display);
+      font-size: 0.8rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 3px;
+      color: var(--muted);
+      margin: 0 0 20px 2px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      border: var(--border-thick);
+      background: var(--card);
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      opacity: 0;
+      transform: translateY(18px);
+      transition: transform 0.4s var(--spring), box-shadow 0.35s ease,
+                  color 0.35s ease, opacity 0.5s ease;
+    }
+    .card.in { opacity: 1; transform: translateY(0); }
+    .card:nth-child(odd).in  { transform: rotate(-1deg); }
+    .card:nth-child(even).in { transform: rotate(1deg); }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--accent);
+      transform: translateY(101%);
+      transition: transform 0.35s var(--spring);
+      z-index: 0;
+    }
+    .card:hover::before { transform: translateY(0); }
+    .card:hover {
+      transform: rotate(0deg) scale(1.04) !important;
+      box-shadow: var(--shadow-offset);
+      color: var(--on-accent);
+      z-index: 3;
+    }
+
+    .card .ico, .card .meta { position: relative; z-index: 1; }
+    .card .ico {
+      width: 40px; height: 40px;
+      flex-shrink: 0;
+      display: grid; place-items: center;
+    }
+    .card .ico svg { width: 34px; height: 34px; }
+    .card .name {
+      font-family: var(--font-display);
+      font-weight: 700; font-size: 1.15rem;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+    }
+    .card .handle {
+      font-family: var(--font-display);
+      font-size: 0.78rem;
+      color: var(--muted);
+      transition: color 0.35s ease;
+      margin-top: 3px;
+      word-break: break-all;
+    }
+    .card:hover .handle { color: rgba(255,255,255,0.75); }
+    :root[data-theme="dark"] .card:hover .handle,
+    :root:not([data-theme="light"]) .card:hover .handle {
+      color: rgba(27,25,23,0.7);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .card:hover .handle { color: rgba(27,25,23,0.7); }
+    }
+
+    .card .arrow {
+      position: absolute;
+      top: 14px; right: 16px;
+      z-index: 1;
+      font-family: var(--font-display);
+      font-weight: 700; font-size: 1.05rem;
+      opacity: 0;
+      transform: translate(-4px, 4px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+    .card:hover .arrow { opacity: 1; transform: translate(0, 0); }
+
+    /* ===== FOOTER ===== */
+    footer {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    footer p {
+      font-family: var(--font-display);
+      font-size: 0.78rem; color: var(--muted);
+    }
+    footer .hint { opacity: 0.7; }
+    .dot {
+      width: 12px; height: 12px;
+      background: var(--accent);
+      border: 2px solid var(--ink);
+      transform: rotate(45deg);
+      transition: transform 0.6s ease;
+      flex-shrink: 0;
+    }
+    .dot:hover { transform: rotate(225deg) scale(1.3); }
+
+    /* ===== FLOATING SHAPES ===== */
+    .shape {
+      position: fixed;
+      z-index: 0;
+      cursor: grab;
+      user-select: none; -webkit-user-select: none;
+      will-change: transform;
+      transition: border-radius 0.5s var(--spring), box-shadow 0.3s ease, clip-path 0.5s var(--spring);
+    }
+    .shape:active { cursor: grabbing; }
+    .shape.dragging { cursor: grabbing; box-shadow: 8px 8px 0 var(--ink) !important; z-index: 20; }
+    .shape.sq { border-radius: 0; }
+    .shape.sq:hover:not(.dragging):not(.phys) { border-radius: 50%; }
+    .shape.ci { border-radius: 50%; }
+    .shape.ci:hover:not(.dragging):not(.phys) { border-radius: 0; }
+    .shape.tr { clip-path: polygon(50% 0, 0 100%, 100% 100%); }
+    .shape.di { clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+    .shape.floating { animation: floaty var(--dur, 11s) ease-in-out infinite; animation-delay: var(--del, 0s); }
+    .shape.dragging, .shape.phys { animation: none !important; }
+    @keyframes floaty {
+      0%, 100% { transform: translate(0,0) rotate(var(--rot, 0deg)); }
+      25% { transform: translate(10px,-15px) rotate(calc(var(--rot,0deg) + 4deg)); }
+      50% { transform: translate(-6px,-25px) rotate(calc(var(--rot,0deg) - 3deg)); }
+      75% { transform: translate(12px,-10px) rotate(calc(var(--rot,0deg) + 5deg)); }
+    }
+
+    /* ===== CURSOR ===== */
+    .cursor-dot {
+      position: fixed;
+      width: 12px; height: 12px;
+      background: var(--accent);
+      border: 2px solid var(--ink);
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease;
+    }
+    .cursor-dot.hover {
+      transform: translate(-50%, -50%) scale(2.5);
+      background: transparent;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 560px) {
+      .grid { grid-template-columns: 1fr; }
+      .wrap { padding-top: 76px; }
+    }
+    @media (max-width: 760px) { .shape { display: none; } }
+    @media (pointer: coarse) { .cursor-dot { display: none; } }
+    @media (prefers-reduced-motion: reduce) {
+      .shape.floating { animation: none; }
+      * { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor-dot" id="cursor" aria-hidden="true"></div>
+
+  <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle theme">
+    <svg class="i-moon" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/></svg>
+  </button>
+
+  <!-- Floating shapes -->
+  <div class="shape sq floating" style="width:200px;height:200px;background:var(--accent);opacity:0.1;top:12%;right:8%;--dur:12s;--del:0s;--rot:10deg;"></div>
+  <div class="shape ci floating" style="width:90px;height:90px;background:var(--accent-pale);border:var(--border);opacity:0.55;bottom:14%;left:6%;--dur:14s;--del:1.5s;--rot:-6deg;"></div>
+  <div class="shape tr floating" style="width:70px;height:70px;background:var(--accent);opacity:0.12;top:60%;right:12%;--dur:10s;--del:0.5s;--rot:0deg;"></div>
+  <div class="shape di floating" style="width:52px;height:52px;background:var(--accent);border:3px solid var(--ink);opacity:0.25;top:26%;left:9%;--dur:13s;--del:3s;--rot:0deg;"></div>
+
+  <main class="wrap">
+    <!-- Hero -->
+    <section class="hero">
+      <div class="avatar">KM</div>
+      <span class="hero-label">Software &amp; AI Engineer</span>
+      <h1><span class="first">Karam</span> <span class="last">Malkon</span></h1>
+      <div class="tagline">I like code and art. Feel free to say hi.</div>
+    </section>
+
+    <!-- Links -->
+    <p class="links-head">Find me</p>
+    <div class="grid" id="grid">
+
+      <a class="card" href="https://github.com/USERNAME" target="_blank" rel="noopener">
+        <span class="arrow">&nearr;</span>
+        <span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></span>
+        <span class="meta">
+          <span class="name">GitHub</span>
+          <span class="handle">@USERNAME</span>
+        </span>
+      </a>
+
+      <a class="card" href="https://linkedin.com/in/USERNAME" target="_blank" rel="noopener">
+        <span class="arrow">&nearr;</span>
+        <span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></span>
+        <span class="meta">
+          <span class="name">LinkedIn</span>
+          <span class="handle">/in/USERNAME</span>
+        </span>
+      </a>
+
+      <a class="card" href="https://USERNAME.itch.io" target="_blank" rel="noopener">
+        <span class="arrow">&nearr;</span>
+        <span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.13 1.338C2.08 1.96.02 4.328 0 4.95v1.03c0 1.303 1.22 2.45 2.325 2.45 1.33 0 2.436-1.102 2.436-2.41 0 1.308 1.07 2.41 2.4 2.41 1.328 0 2.362-1.102 2.362-2.41 0 1.308 1.137 2.41 2.466 2.41h.024c1.33 0 2.466-1.102 2.466-2.41 0 1.308 1.034 2.41 2.363 2.41 1.33 0 2.4-1.102 2.4-2.41 0 1.308 1.106 2.41 2.435 2.41C22.78 8.43 24 7.282 24 5.98V4.95c-.02-.62-2.082-2.99-3.13-3.612-3.253-.114-5.508-.134-8.87-.133-3.362 0-7.945.053-8.87.133zm6.376 6.477a2.74 2.74 0 0 1-.468.602c-.5.49-1.19.795-1.947.795a2.786 2.786 0 0 1-1.95-.795c-.182-.178-.32-.37-.446-.59-.127.222-.303.412-.486.59a2.788 2.788 0 0 1-1.95.795c-.092 0-.187-.025-.264-.052-.107 1.113-.152 2.176-.168 2.95v.005l-.006 1.167c.02 2.334-.23 7.564 1.03 8.85 1.952.454 5.545.662 9.15.663 3.605 0 7.198-.21 9.15-.664 1.26-1.284 1.01-6.514 1.03-8.848l-.006-1.167v-.004c-.016-.775-.06-1.838-.168-2.95-.077.026-.172.052-.263.052a2.788 2.788 0 0 1-1.95-.795c-.184-.178-.36-.368-.486-.59-.127.22-.265.412-.447.59a2.786 2.786 0 0 1-1.95.794c-.76 0-1.446-.303-1.948-.793a2.74 2.74 0 0 1-.468-.602 2.738 2.738 0 0 1-.463.602 2.787 2.787 0 0 1-1.95.794h-.16a2.787 2.787 0 0 1-1.95-.793 2.738 2.738 0 0 1-.464-.602zm-2.004 2.59v.002c.795.002 1.5 0 2.373.953.687-.072 1.406-.108 2.125-.107.72 0 1.438.035 2.125.107.873-.953 1.578-.95 2.372-.953.376 0 1.876 0 2.92 2.934l1.123 4.028c.832 2.995-.266 3.068-1.636 3.07-2.03-.075-3.156-1.55-3.156-3.025-1.124.184-2.436.276-3.748.277-1.312 0-2.624-.093-3.748-.277 0 1.475-1.125 2.95-3.156 3.026-1.37-.004-2.468-.077-1.636-3.072l1.122-4.027c1.045-2.934 2.545-2.934 2.92-2.934zM12 12.714c-.002.002-2.14 1.964-2.523 2.662l1.4-.056v1.22c0 .056.56.033 1.123.007.562.026 1.124.05 1.124-.008v-1.22l1.4.055C14.138 14.677 12 12.713 12 12.713z"/></svg></span>
+        <span class="meta">
+          <span class="name">itch.io</span>
+          <span class="handle">USERNAME.itch.io</span>
+        </span>
+      </a>
+
+      <a class="card" href="https://play.google.com/store/apps/developer?id=USERNAME" target="_blank" rel="noopener">
+        <span class="arrow">&nearr;</span>
+        <span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.018 13.298l-3.919 2.218-3.515-3.493 3.543-3.521 3.891 2.202a1.49 1.49 0 0 1 0 2.594zM1.337.924a1.486 1.486 0 0 0-.112.568v21.017c0 .217.045.419.124.6l11.155-11.087L1.337.924zm12.207 10.065l3.258-3.238L3.45.195a1.466 1.466 0 0 0-.946-.179l11.04 10.973zm0 2.067l-11 10.933c.298.036.612-.016.906-.183l13.324-7.54-3.23-3.21z"/></svg></span>
+        <span class="meta">
+          <span class="name">Play Store</span>
+          <span class="handle">Developer page</span>
+        </span>
+      </a>
+
+      <a class="card" href="https://www.npmjs.com/~USERNAME" target="_blank" rel="noopener">
+        <span class="arrow">&nearr;</span>
+        <span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.04 19.17H5.113z"/></svg></span>
+        <span class="meta">
+          <span class="name">npm</span>
+          <span class="handle">~USERNAME</span>
+        </span>
+      </a>
+
+      <a class="card" href="mailto:you@example.com">
+        <span class="arrow">&nearr;</span>
+        <span class="ico"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg></span>
+        <span class="meta">
+          <span class="name">Email</span>
+          <span class="handle">you@example.com</span>
+        </span>
+      </a>
+
+    </div>
+
+    <footer>
+      <p>&copy; <span id="year"></span> Karam Malkon</p>
+      <p class="hint">press <strong>G</strong> for gravity</p>
+      <div class="dot" aria-hidden="true"></div>
+    </footer>
+  </main>
+
+  <script>
+    // ===== Theme toggle =====
+    (function () {
+      const root = document.documentElement;
+      const btn = document.getElementById('themeToggle');
+      const saved = localStorage.getItem('theme');
+      if (saved === 'light' || saved === 'dark') root.setAttribute('data-theme', saved);
+
+      function effective() {
+        const attr = root.getAttribute('data-theme');
+        if (attr) return attr;
+        return matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      btn.addEventListener('click', () => {
+        const next = effective() === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+      });
+    })();
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // ===== Custom cursor (fine pointers only) =====
+    const cursor = document.getElementById('cursor');
+    if (matchMedia('(pointer: fine)').matches) {
+      let mx = 0, my = 0, cx = 0, cy = 0;
+      addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+      (function loop() {
+        cx += (mx - cx) * 0.18; cy += (my - cy) * 0.18;
+        cursor.style.left = cx + 'px'; cursor.style.top = cy + 'px';
+        requestAnimationFrame(loop);
+      })();
+      document.querySelectorAll('a, button, .card, .tagline, .avatar, .dot, .shape')
+        .forEach(el => {
+          el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+          el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+    } else {
+      cursor.style.display = 'none';
+    }
+
+    // ===== Stagger cards in =====
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const cards = [...document.querySelectorAll('.card')];
+          cards.forEach((c, i) => setTimeout(() => c.classList.add('in'), i * 90));
+          io.disconnect();
+        }
+      });
+    }, { threshold: 0.1 });
+    io.observe(document.getElementById('grid'));
+
+    // ===== Floating draggable shapes + gravity (press G) =====
+    (function () {
+      if (matchMedia('(max-width: 760px)').matches) return;
+      const els = document.querySelectorAll('.shape');
+      const all = [];
+      let gravity = false, frame = null;
+
+      els.forEach(el => {
+        const r = el.getBoundingClientRect();
+        const s = {
+          el, dragging: false, phys: false, moved: false,
+          x: r.left, y: r.top, w: el.offsetWidth, h: el.offsetHeight,
+          vx: 0, vy: 0, sx: 0, sy: 0, ex: 0, ey: 0, hist: []
+        };
+        el._s = s; all.push(s);
+
+        el.addEventListener('mousedown', e => {
+          e.preventDefault(); e.stopPropagation();
+          const rr = el.getBoundingClientRect();
+          s.x = rr.left; s.y = rr.top;
+          el.classList.remove('floating', 'phys');
+          el.classList.add('dragging');
+          el.style.left = '0'; el.style.top = '0';
+          el.style.right = 'auto'; el.style.bottom = 'auto';
+          el.style.transform = `translate(${s.x}px,${s.y}px)`;
+          s.dragging = true; s.moved = true;
+          s.sx = e.clientX; s.sy = e.clientY; s.ex = s.x; s.ey = s.y;
+          s.hist = [{ x: e.clientX, y: e.clientY, t: performance.now() }];
+          s.vx = 0; s.vy = 0;
+        });
+      });
+
+      addEventListener('mousemove', e => {
+        for (const s of all) {
+          if (!s.dragging) continue;
+          s.x = s.ex + (e.clientX - s.sx);
+          s.y = s.ey + (e.clientY - s.sy);
+          s.el.style.transform = `translate(${s.x}px,${s.y}px)`;
+          const now = performance.now();
+          s.hist.push({ x: e.clientX, y: e.clientY, t: now });
+          while (s.hist.length > 1 && now - s.hist[0].t > 80) s.hist.shift();
+        }
+      });
+
+      addEventListener('mouseup', () => {
+        for (const s of all) {
+          if (!s.dragging) continue;
+          s.dragging = false;
+          s.el.classList.remove('dragging');
+          cursor.classList.remove('hover');
+          const h = s.hist;
+          if (h.length >= 2) {
+            const a = h[0], b = h[h.length - 1], dt = (b.t - a.t) / 1000;
+            if (dt > 0.005) {
+              s.vx = (b.x - a.x) / dt; s.vy = (b.y - a.y) / dt;
+              const max = 2500, sp = Math.hypot(s.vx, s.vy);
+              if (sp > max) { s.vx = s.vx / sp * max; s.vy = s.vy / sp * max; }
+            }
+          }
+          s.el.classList.add('phys'); s.phys = true; ensure();
+        }
+      });
+
+      const BOUNCE = 0.55, FRICTION = 0.985, STOP = 8, G = 1800;
+      let last = 0;
+      function ensure() { if (!frame) { last = performance.now(); frame = requestAnimationFrame(step); } }
+
+      function step(now) {
+        const dt = Math.min((now - last) / 1000, 0.05); last = now;
+        const W = innerWidth, H = innerHeight;
+        let active = false;
+        for (const s of all) {
+          if (!s.phys && !gravity) continue;
+          if (s.dragging) continue;
+          if (gravity && !s.phys) {
+            if (!s.moved) {
+              const rr = s.el.getBoundingClientRect();
+              s.x = rr.left; s.y = rr.top;
+              s.el.classList.remove('floating');
+              s.el.style.left = '0'; s.el.style.top = '0';
+              s.el.style.right = 'auto'; s.el.style.bottom = 'auto';
+              s.moved = true;
+            }
+            s.phys = true; s.el.classList.add('phys');
+          }
+          active = true;
+          if (gravity) s.vy += G * dt;
+          s.vx *= FRICTION; s.vy *= FRICTION;
+          s.x += s.vx * dt; s.y += s.vy * dt;
+          const mx = W - s.w, my = H - s.h;
+          if (s.x < 0) { s.x = 0; s.vx = Math.abs(s.vx) * BOUNCE; }
+          else if (s.x > mx) { s.x = mx; s.vx = -Math.abs(s.vx) * BOUNCE; }
+          if (s.y < 0) { s.y = 0; s.vy = Math.abs(s.vy) * BOUNCE; }
+          else if (s.y > my) { s.y = my; s.vy = -Math.abs(s.vy) * BOUNCE; }
+          s.el.style.transform = `translate(${s.x}px,${s.y}px) rotate(${s.vx * 0.03}deg)`;
+          const sp = Math.hypot(s.vx, s.vy);
+          if (!gravity && sp < STOP) {
+            s.vx = s.vy = 0; s.phys = false; s.el.classList.remove('phys');
+            s.el.style.transform = `translate(${s.x}px,${s.y}px)`;
+          }
+          if (gravity && s.y >= my - 1 && sp < STOP) { s.vx = s.vy = 0; }
+        }
+        frame = (active || gravity) ? requestAnimationFrame(step) : null;
+      }
+
+      addEventListener('keydown', e => {
+        if ((e.key === 'g' || e.key === 'G') && !/input|textarea/i.test(e.target.tagName)) {
+          gravity = !gravity;
+          if (gravity) ensure();
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

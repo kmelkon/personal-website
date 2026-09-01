@@ -1,0 +1,8 @@
+# Local scratch — kept out of the public repo
+.claude/
+mockups/
+initial_prompt.md
+
+# OS / editor cruft
+.DS_Store
+*.swp
