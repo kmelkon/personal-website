@@ -138,11 +138,12 @@
     .hero { position: relative; margin-bottom: 56px; }
 
     .avatar {
-      width: 84px; height: 84px;
+      width: 104px; height: 104px;
       border: var(--border-thick);
       background: var(--accent);
       color: var(--on-accent);
       display: grid; place-items: center;
+      overflow: hidden;
       font-family: var(--font-display);
       font-weight: 700; font-size: 2rem;
       letter-spacing: -1px;
@@ -150,6 +151,7 @@
       margin-bottom: 24px;
       transition: transform 0.4s var(--spring), box-shadow 0.3s ease;
     }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; -webkit-user-drag: none; user-select: none; }
     .avatar:hover {
       transform: rotate(0deg) scale(1.05);
       box-shadow: var(--shadow-offset);
@@ -186,6 +188,40 @@
       transition: transform 0.3s var(--spring);
     }
     .tagline:hover { transform: rotate(0deg) scale(1.02); }
+
+    /* ===== ABOUT (expandable) ===== */
+    .about-toggle {
+      margin-top: 18px;
+      font-family: var(--font-display);
+      font-weight: 700; font-size: 0.78rem;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      padding: 9px 15px;
+      border: var(--border);
+      background: var(--card);
+      color: var(--ink);
+      cursor: pointer;
+      transition: transform 0.25s var(--spring), box-shadow 0.25s ease, background 0.2s ease;
+    }
+    .about-toggle:hover { transform: rotate(-1deg) scale(1.04); box-shadow: 4px 4px 0 var(--ink); }
+    .about-toggle:active { transform: scale(0.96); }
+
+    .about-panel {
+      max-height: 0; overflow: hidden; opacity: 0;
+      margin-top: 0;
+      transition: max-height 0.45s var(--spring), opacity 0.35s ease, margin-top 0.45s ease;
+    }
+    .about-panel.open { max-height: 500px; opacity: 1; margin-top: 16px; }
+    .about-inner {
+      border: var(--border);
+      background: var(--card);
+      padding: 20px 22px;
+      max-width: 560px;
+      font-size: 1.02rem; line-height: 1.65;
+      transform: rotate(-0.4deg);
+    }
+    .about-inner p { margin-bottom: 10px; }
+    .about-inner p:last-child { margin-bottom: 0; }
+    .about-inner strong { color: var(--accent); font-weight: 700; }
 
     /* ===== LINKS ===== */
     .links-head {
@@ -408,10 +444,18 @@
   <main class="wrap">
     <!-- Hero -->
     <section class="hero">
-      <div class="avatar">KM</div>
+      <div class="avatar"><img src="me.jpg" alt="Karam Malkon" width="104" height="104"></div>
       <span class="hero-label">Software Engineer</span>
       <h1><span class="first">Karam</span> <span class="last">Malkon</span></h1>
       <div class="tagline">I like code and art. Feel free to say hi.</div>
+      <button class="about-toggle" id="aboutToggle" aria-expanded="false" aria-controls="aboutPanel">+ About</button>
+      <div class="about-panel" id="aboutPanel">
+        <div class="about-inner">
+          <p>Hi, I'm Karam — a software engineer in <strong>Stockholm</strong>, originally from Amman, Jordan. I've spent about a decade building products for the web and mobile.</p>
+          <p>Outside of work I <strong>draw and paint</strong>, poke at AI side projects, and I'm currently learning game dev in Godot.</p>
+          <p>Always up for a chat — say hi. 👋</p>
+        </div>
+      </div>
     </section>
 
     <!-- Links -->
@@ -502,6 +546,18 @@
     })();
 
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // About toggle (expand/collapse)
+    (function () {
+      const btn = document.getElementById('aboutToggle');
+      const panel = document.getElementById('aboutPanel');
+      if (!btn || !panel) return;
+      btn.addEventListener('click', () => {
+        const open = panel.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        btn.textContent = open ? '– About' : '+ About';
+      });
+    })();
 
     // ===== Custom cursor (fine pointers only) =====
     const cursor = document.getElementById('cursor');
